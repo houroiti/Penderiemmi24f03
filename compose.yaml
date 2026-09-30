@@ -1,0 +1,31 @@
+services:
+  php:
+    build: ./docker/php
+    volumes:
+      - ./app:/var/www/app
+    depends_on:
+      - database
+
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app:/var/www/app
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - php
+
+  database:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: penderie
+      POSTGRES_USER: penderie
+      POSTGRES_PASSWORD: penderie
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  db_data:
