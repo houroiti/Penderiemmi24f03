@@ -68,5 +68,12 @@
             "allow-contrib": false,
             "require": "7.4.*"
         }
+    },
+    "require-dev": {
+        "symfony/debug-bundle": "7.4.*",
+        "symfony/maker-bundle": "^1.68",
+        "symfony/monolog-bundle": "^3.0|^4.0",
+        "symfony/stopwatch": "7.4.*",
+        "symfony/web-profiler-bundle": "7.4.*"
     }
 }
