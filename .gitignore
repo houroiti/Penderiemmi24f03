@@ -1,0 +1,5 @@
+# Réglages de l'éditeur PhpStorm
+.idea/
+
+# Fichiers système macOS
+.DS_Store
