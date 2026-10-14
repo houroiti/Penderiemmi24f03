@@ -3,3 +3,6 @@
 
 # Fichiers système macOS
 .DS_Store
+
+# Instructions personnelles pour Claude Code
+CLAUDE.md
