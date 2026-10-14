@@ -1,4 +1,6 @@
 {
+    "name": "houroiti/penderie",
+    "description": "Penderie : ranger, retrouver et partager ses objets entre proches",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
