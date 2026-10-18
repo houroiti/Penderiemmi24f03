@@ -6,7 +6,7 @@ PHP     = $(DC) exec php
 CONSOLE = $(PHP) bin/console
 
 .DEFAULT_GOAL := help
-.PHONY: help up down sh phpstan lint lint-container lint-yaml lint-twig audit validate quality
+.PHONY: help up down sh phpstan lint lint-container lint-yaml lint-twig audit validate quality test test-db
 
 help: ## Affiche cette aide
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -42,3 +42,11 @@ validate: ## Vérifie que composer.json est valide
 	$(PHP) composer validate --strict
 
 quality: validate lint phpstan audit ## Lance tous les contrôles qualité
+
+test-db: ## (Re)crée la base de test et joue les migrations
+	$(CONSOLE) doctrine:database:drop --env=test --force --if-exists
+	$(CONSOLE) doctrine:database:create --env=test
+	$(CONSOLE) doctrine:migrations:migrate --env=test --no-interaction
+
+test: ## Lance les tests PHPUnit
+	$(PHP) bin/phpunit
