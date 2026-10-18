@@ -6,7 +6,7 @@ PHP     = $(DC) exec php
 CONSOLE = $(PHP) bin/console
 
 .DEFAULT_GOAL := help
-.PHONY: help up down sh phpstan lint lint-container lint-yaml lint-twig audit validate quality test test-db
+.PHONY: help up down sh phpstan lint lint-container lint-yaml lint-twig audit validate quality test test-db fixtures
 
 help: ## Affiche cette aide
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -50,3 +50,6 @@ test-db: ## (Re)crée la base de test et joue les migrations
 
 test: ## Lance les tests PHPUnit
 	$(PHP) bin/phpunit
+
+fixtures: ## Vide la base de dev et charge les données de démo
+	$(CONSOLE) doctrine:fixtures:load --no-interaction
