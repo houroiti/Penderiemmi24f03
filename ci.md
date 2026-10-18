@@ -25,21 +25,21 @@ docker compose exec php bin/phpunit --testdox
 
 ### Tests de `ItemVoter`, `ItemRepository` et `GET /api/items/{id}`
 
-- Date :
-- Branche :
-- Commit :
-- Résultat :
+- Date : 18 octobre 2026
+- Branche : `feature/item-tests`
+- Commit : `f72e815`
+- Résultat : OK (15 tests, 27 assertions)
 
-<!-- ![make test au vert](docs/ci/make-test.png) -->
+![make test au vert](docs/ci/make-test.png)
 
 ### Contrôles qualité
 
-- Date :
-- Branche :
-- Commit :
-- Résultat :
+- Date : 18 octobre 2026
+- Branche : `feature/item-tests`
+- Commit : `f72e815`
+- Résultat : validate, lint, PHPStan niveau 6 (0 erreur) et composer audit (aucune vulnérabilité) au vert
 
-<!-- ![make quality au vert](docs/ci/make-quality.png) -->
+![make quality au vert](docs/ci/make-quality.png)  
 
 ## Prochaine étape
 
