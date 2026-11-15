@@ -3,6 +3,7 @@
 namespace App\Tests\Functional\BackOffice;
 
 use App\Entity\Follow;
+use App\Entity\Item;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -66,6 +67,27 @@ final class AdminDashboardTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('body', 'admin@example.com');
         self::assertSelectorTextNotContains('body', 'not-a-real-hash');
+    }
+
+    public function testSuperAdminCanDeleteAUserWhoOwnsItems(): void
+    {
+        $victor = $this->createUser('victor@example.com', []);
+        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
+        $entityManager->persist((new Item())->setName('Pull')->setOwner($victor));
+        $entityManager->flush();
+        $victorId = $victor->getId();
+
+        $this->client->loginUser($this->createUser('admin@example.com', ['ROLE_SUPER_ADMIN']));
+        $crawler = $this->client->request('GET', '/fr/admin/user');
+        // the delete form of EasyAdmin carries a CSRF token, read from the page like a browser does
+        $token = $crawler->filter('input[name="token"]')->attr('value');
+
+        $this->client->request('POST', "/fr/admin/user/{$victorId}/delete", ['token' => $token]);
+
+        self::assertResponseRedirects();
+        $entityManager->clear();
+        self::assertNull($entityManager->getRepository(User::class)->find($victorId));
+        self::assertSame(0, $entityManager->getRepository(Item::class)->count(['name' => 'Pull']));
     }
 
     public function testSuperAdminCanModerateButNeverGrantARelation(): void
