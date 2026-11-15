@@ -164,6 +164,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->createdAt;
     }
 
+    public function isSuperAdmin(): bool
+    {
+        return in_array('ROLE_SUPER_ADMIN', $this->roles, true);
+    }
+
+    /**
+     * Adds or removes only ROLE_SUPER_ADMIN: the other roles (ROLE_CHILD...) are kept as they are.
+     */
+    public function setSuperAdmin(bool $superAdmin): static
+    {
+        $roles = array_values(array_diff($this->roles, ['ROLE_SUPER_ADMIN']));
+        if ($superAdmin) {
+            $roles[] = 'ROLE_SUPER_ADMIN';
+        }
+        $this->roles = $roles;
+
+        return $this;
+    }
+
     public function isChild(): bool
     {
         return in_array('ROLE_CHILD', $this->roles, true);
