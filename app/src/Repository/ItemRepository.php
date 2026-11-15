@@ -32,11 +32,11 @@ class ItemRepository extends ServiceEntityRepository
     }
 
     /**
-     * Items not stored in any furniture yet ("à ranger").
+     * Items not stored in any furniture yet ("à ranger"), optionally only those of one owner.
      */
-    public function countUnstored(User $owner): int
+    public function countUnstored(?User $owner = null): int
     {
-        return $this->count(['owner' => $owner, 'furniture' => null]);
+        return $this->count(null === $owner ? ['furniture' => null] : ['owner' => $owner, 'furniture' => null]);
     }
 
     /**

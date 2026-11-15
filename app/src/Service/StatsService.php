@@ -27,7 +27,7 @@ final class StatsService
     /**
      * KPIs of the whole application, for the super admin.
      *
-     * @return array{users: int, newUsersLast7Days: int, items: int, personalItems: int, personalRatio: float, itemsPerUser: float, activeLoans: int, overdueLoans: int, itemsByCategory: array<string, int>}
+     * @return array{users: int, newUsersLast7Days: int, items: int, personalItems: int, personalRatio: float, storedRatio: float, itemsPerUser: float, activeLoans: int, overdueLoans: int, itemsByCategory: array<string, int>}
      */
     public function getGlobalStats(?\DateTimeImmutable $today = null): array
     {
@@ -42,6 +42,7 @@ final class StatsService
             'items' => $items,
             'personalItems' => $personalItems,
             'personalRatio' => self::percentage($personalItems, $items),
+            'storedRatio' => self::percentage($items - $this->itemRepository->countUnstored(), $items),
             'itemsPerUser' => 0 === $users ? 0.0 : round($items / $users, 1),
             'activeLoans' => $this->loanRepository->countActive(),
             'overdueLoans' => $this->loanRepository->countOverdue($today),

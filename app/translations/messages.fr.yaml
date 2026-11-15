@@ -75,7 +75,8 @@ kpi:
     user_title: Bonjour %name%
     users: Utilisateurs
     new_users: Nouveaux inscrits (7 jours)
-    items: Objets rangés dans Penderie
+    items: Objets dans Penderie
+    stored_ratio: Objets rangés dans un meuble
     personal_ratio: Part d'objets personnels
     items_per_user: Objets par utilisateur
     active_loans: Prêts en cours

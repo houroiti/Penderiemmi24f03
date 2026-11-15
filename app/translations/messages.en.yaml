@@ -75,7 +75,8 @@ kpi:
     user_title: Hello %name%
     users: Users
     new_users: New sign-ups (7 days)
-    items: Items stored in Penderie
+    items: Items in Penderie
+    stored_ratio: Items put away in furniture
     personal_ratio: Share of personal items
     items_per_user: Items per user
     active_loans: Loans in progress

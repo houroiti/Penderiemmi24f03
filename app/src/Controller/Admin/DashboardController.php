@@ -12,7 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Super admin back office: the site owner administers everything and follows the KPIs.
+ * Super admin back office: the site owner follows the KPIs and moderates (accounts, relations, items).
+ * Homes, rooms, furniture and loans are not listed here: how people organise their home is private,
+ * the dashboard shows what matters as global figures (data minimisation, GDPR).
  */
 #[AdminDashboard(
     routePath: '/{_locale}/admin',
@@ -21,11 +23,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
     allowedControllers: [
         UserCrudController::class,
         FollowCrudController::class,
-        HomeCrudController::class,
-        RoomCrudController::class,
-        FurnitureCrudController::class,
         ItemCrudController::class,
-        LoanCrudController::class,
     ],
 )]
 #[IsGranted('ROLE_SUPER_ADMIN')]
@@ -59,10 +57,6 @@ final class DashboardController extends AbstractDashboardController
         yield MenuItem::linkTo(FollowCrudController::class, 'menu.follows', 'fa fa-user-group');
 
         yield MenuItem::section('menu.wardrobe');
-        yield MenuItem::linkTo(HomeCrudController::class, 'menu.homes', 'fa fa-house');
-        yield MenuItem::linkTo(RoomCrudController::class, 'menu.rooms', 'fa fa-door-open');
-        yield MenuItem::linkTo(FurnitureCrudController::class, 'menu.furniture', 'fa fa-box-archive');
         yield MenuItem::linkTo(ItemCrudController::class, 'menu.items', 'fa fa-shirt');
-        yield MenuItem::linkTo(LoanCrudController::class, 'menu.loans', 'fa fa-handshake');
     }
 }
