@@ -2,6 +2,7 @@
 
 namespace App\Tests\Functional\BackOffice;
 
+use App\Entity\Follow;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -65,6 +66,29 @@ final class AdminDashboardTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('body', 'admin@example.com');
         self::assertSelectorTextNotContains('body', 'not-a-real-hash');
+    }
+
+    public function testSuperAdminCanModerateButNeverGrantARelation(): void
+    {
+        $camille = $this->createUser('camille@example.com', []);
+        $leo = $this->createUser('leo@example.com', []);
+        $follow = (new Follow())->setFollower($leo)->setFollowed($camille);
+        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
+        $entityManager->persist($follow);
+        $entityManager->flush();
+
+        $this->client->loginUser($this->createUser('admin@example.com', ['ROLE_SUPER_ADMIN']));
+
+        // seeing and deleting (moderation) is allowed
+        $this->client->request('GET', '/fr/admin/follow');
+        self::assertResponseIsSuccessful();
+        self::assertSelectorExists('[data-action-name="delete"], .action-delete');
+
+        // creating or changing a relation would grant an access without consent: refused
+        $this->client->request('GET', '/fr/admin/follow/new');
+        self::assertResponseStatusCodeSame(403);
+        $this->client->request('GET', '/fr/admin/follow/'.$follow->getId().'/edit');
+        self::assertResponseStatusCodeSame(403);
     }
 
     /**

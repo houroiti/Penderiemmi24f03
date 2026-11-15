@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Follow;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -11,6 +13,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 
 /**
+ * Moderation only: the admin can see and delete a relation (abuse, fake account...),
+ * but never create or change one. Deleting can only remove an access; creating one
+ * would expose someone's things without their consent: that decision belongs to the user.
+ *
  * @extends AbstractCrudController<Follow>
  */
 final class FollowCrudController extends AbstractCrudController
@@ -26,6 +32,13 @@ final class FollowCrudController extends AbstractCrudController
             ->setEntityLabelInSingular('entity.follow.singular')
             ->setEntityLabelInPlural('entity.follow.plural')
             ->setDefaultSort(['createdAt' => 'DESC']);
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions
+            ->disable(Action::NEW, Action::EDIT)
+            ->add(Crud::PAGE_INDEX, Action::DETAIL);
     }
 
     public function configureFilters(Filters $filters): Filters
