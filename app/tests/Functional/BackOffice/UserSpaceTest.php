@@ -77,6 +77,33 @@ final class UserSpaceTest extends WebTestCase
         self::assertSame($camille->getId(), $item->getOwner()?->getId());
     }
 
+    public function testCreatingALoanOnlyOffersMyOwnItems(): void
+    {
+        $camille = $this->createUser('camille@example.com', 'Camille');
+        $sophie = $this->createUser('sophie@example.com', 'Sophie');
+        $pull = $this->createItem('Pull bordeaux', $camille);
+        $this->createItem('Robe de Sophie', $sophie);
+
+        $this->client->loginUser($camille);
+        $crawler = $this->client->request('GET', '/fr/mon-espace/my-loan/new');
+        self::assertResponseIsSuccessful();
+
+        $options = $crawler->filter('select[name="Loan[item]"] option')->extract(['_text']);
+        self::assertContains('Pull bordeaux', $options);
+        self::assertNotContains('Robe de Sophie', $options);
+
+        $form = $crawler->filter('form[name="Loan"]')->form([
+            'Loan[item]' => (string) $pull->getId(),
+            'Loan[borrowerName]' => 'Sophie',
+            'Loan[lentAt]' => '2026-11-01',
+            'Loan[dueDate]' => '2026-11-20',
+        ]);
+        $this->client->submit($form);
+
+        self::assertResponseRedirects();
+        self::assertSame(1, $this->entityManager->getRepository(Loan::class)->count(['item' => $pull]));
+    }
+
     public function testLoanListShowsTheStatusDeducedFromTheDates(): void
     {
         $camille = $this->createUser('camille@example.com', 'Camille');
