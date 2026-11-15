@@ -1,0 +1,8 @@
+{# Same layout as EasyAdmin, only the browser icon changes.
+   EasyAdmin passes the favicon path to asset(), which would turn "data:," into "/data:," (a 404). #}
+{% extends '@EasyAdmin/layout.html.twig' %}
+
+{% block head_favicon %}
+    {# empty icon for now (a real one will come later): avoids a 404 on /favicon.ico #}
+    <link rel="icon" href="data:,">
+{% endblock %}
