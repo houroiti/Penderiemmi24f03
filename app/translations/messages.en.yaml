@@ -95,3 +95,8 @@ confirm:
     delete_home: "Deleting “%name%” will also delete its rooms (%rooms%) and furniture (%furniture%). The items stored there (%items%) will not be deleted: they will need to be put away."
     delete_room: "Deleting “%name%” will also delete its furniture (%furniture%). The items stored there (%items%) will not be deleted: they will need to be put away."
     delete_furniture: "Delete “%name%”? The items stored there (%items%) will not be deleted: they will need to be put away."
+form:
+    choose_home: "Choose a home…"
+    choose_room: "Choose a room…"
+    choose_item: "Choose an item…"
+    not_stored: "Not put away yet"

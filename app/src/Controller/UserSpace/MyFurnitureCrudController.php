@@ -83,6 +83,8 @@ final class MyFurnitureCrudController extends AbstractOwnedCrudController
 
         yield TextField::new('name', 'field.name');
         yield AssociationField::new('room', 'field.room')
+            // an empty first choice: nothing is silently pre-selected, the user chooses on purpose
+            ->setFormTypeOption('placeholder', 'form.choose_room')
             ->setQueryBuilder(static fn (QueryBuilder $queryBuilder) => $queryBuilder
                 ->join('entity.home', 'home')
                 ->andWhere('home.owner = :owner')

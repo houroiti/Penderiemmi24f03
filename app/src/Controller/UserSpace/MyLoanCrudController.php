@@ -45,6 +45,8 @@ final class MyLoanCrudController extends AbstractOwnedCrudController
 
         // only the user's own items can be lent
         yield AssociationField::new('item', 'field.item')
+            // an empty first choice: nothing is silently pre-selected, the user chooses on purpose
+            ->setFormTypeOption('placeholder', 'form.choose_item')
             ->setQueryBuilder(static fn (QueryBuilder $queryBuilder) => $queryBuilder
                 ->andWhere('entity.owner = :owner')
                 ->setParameter('owner', $user));

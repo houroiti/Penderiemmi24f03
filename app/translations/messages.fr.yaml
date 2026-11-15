@@ -95,3 +95,8 @@ confirm:
     delete_home: "Supprimer « %name% » supprimera aussi ses pièces (%rooms%) et ses meubles (%furniture%). Les objets rangés dedans (%items%) ne seront pas supprimés : ils seront à ranger."
     delete_room: "Supprimer « %name% » supprimera aussi ses meubles (%furniture%). Les objets rangés dedans (%items%) ne seront pas supprimés : ils seront à ranger."
     delete_furniture: "Supprimer « %name% » ? Les objets rangés dedans (%items%) ne seront pas supprimés : ils seront à ranger."
+form:
+    choose_home: "Choisir un logement…"
+    choose_room: "Choisir une pièce…"
+    choose_item: "Choisir un objet…"
+    not_stored: "Pas encore rangé"

@@ -8,6 +8,7 @@ use App\Entity\Item;
 use App\Entity\Room;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -73,8 +74,47 @@ final class PlacesTest extends WebTestCase
         $crawler = $this->client->request('GET', '/fr/mon-espace/my-room/new?home='.$sophiesHome->getId());
 
         self::assertResponseIsSuccessful();
-        self::assertCount(0, $crawler->filter('select[name="Room[home]"] option[selected]'));
+        // the empty choice is shown, never one of the user's homes picked silently
+        self::assertSame('', $crawler->filter('select[name="Room[home]"] option[selected]')->attr('value'));
+        self::assertSame('Choisir un logement…', trim($crawler->filter('select[name="Room[home]"] option[selected]')->text()));
         self::assertSelectorTextNotContains('select[name="Room[home]"]', 'Maison de Sophie');
+    }
+
+    /**
+     * Each list starts with an empty choice, so nothing is silently pre-selected.
+     *
+     * @return iterable<string, array{string, string, string}>
+     */
+    public static function emptyChoiceProvider(): iterable
+    {
+        yield 'room: home' => ['/fr/mon-espace/my-room/new', 'Room[home]', 'Choisir un logement…'];
+        yield 'furniture: room' => ['/fr/mon-espace/my-furniture/new', 'Furniture[room]', 'Choisir une pièce…'];
+        yield 'loan: item' => ['/fr/mon-espace/my-loan/new', 'Loan[item]', 'Choisir un objet…'];
+        yield 'item: furniture (optional)' => ['/fr/mon-espace/my-item/new', 'Item[furniture]', 'Pas encore rangé'];
+        yield 'arabic' => ['/ar/mon-espace/my-room/new', 'Room[home]', 'اختر مسكنًا…'];
+    }
+
+    #[DataProvider('emptyChoiceProvider')]
+    public function testListsStartWithAnEmptyChoice(string $url, string $field, string $label): void
+    {
+        $crawler = $this->client->request('GET', $url);
+
+        $first = $crawler->filter("select[name=\"{$field}\"] option")->first();
+        self::assertSame('', $first->attr('value'));
+        self::assertSame($label, trim($first->text()));
+        // no real choice is pre-selected: the browser shows the empty first one
+        self::assertCount(0, $crawler->filter("select[name=\"{$field}\"] option[selected]:not([value=''])"));
+    }
+
+    public function testARoomCannotBeCreatedWithoutChoosingAHome(): void
+    {
+        $crawler = $this->client->request('GET', '/fr/mon-espace/my-room/new');
+        $form = $crawler->filter('form[name="Room"]')->form(['Room[name]' => 'Bureau']);
+
+        $this->client->submit($form);
+
+        self::assertResponseStatusCodeSame(422);
+        self::assertNull($this->entityManager->getRepository(Room::class)->findOneBy(['name' => 'Bureau']));
     }
 
     public function testDeletingAHomeWarnsAboutEverythingThatGoesWithIt(): void
