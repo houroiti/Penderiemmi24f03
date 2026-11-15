@@ -24,4 +24,12 @@ class FollowRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['follower' => $follower, 'followed' => $followed]);
     }
+
+    /**
+     * People who follow $user, optionally only the close friends.
+     */
+    public function countFollowersOf(User $user, bool $closeFriendsOnly = false): int
+    {
+        return $this->count($closeFriendsOnly ? ['followed' => $user, 'isCloseFriend' => true] : ['followed' => $user]);
+    }
 }

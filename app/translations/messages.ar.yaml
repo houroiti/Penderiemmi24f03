@@ -6,3 +6,84 @@ login:
     email: البريد الإلكتروني
     password: كلمة المرور
     submit: دخول
+menu:
+    dashboard: لوحة التحكم
+    people: الأشخاص
+    users: المستخدمون
+    follows: الأصدقاء والمتابعون
+    wardrobe: الخزانة
+    homes: المساكن
+    rooms: الغرف
+    furniture: قطع الأثاث
+    items: الأغراض
+    loans: الإعارات
+    my_space: مساحتي
+entity:
+    user: { singular: مستخدم, plural: المستخدمون }
+    follow: { singular: علاقة, plural: الأصدقاء والمتابعون }
+    home: { singular: مسكن, plural: المساكن }
+    room: { singular: غرفة, plural: الغرف }
+    furniture: { singular: قطعة أثاث, plural: قطع الأثاث }
+    item: { singular: غرض, plural: الأغراض }
+    loan: { singular: إعارة, plural: الإعارات }
+field:
+    id: المعرّف
+    name: الاسم
+    email: البريد الإلكتروني
+    pseudo: الاسم المستعار
+    roles: الأدوار
+    parent: حساب الوالد
+    created_at: تاريخ الإنشاء
+    owner: المالك
+    category: الفئة
+    color: اللون
+    brand: العلامة التجارية
+    furniture: مكان الحفظ
+    is_personal: غرض شخصي
+    visible_to_followers: مرئي للمتابعين
+    home: المسكن
+    room: الغرفة
+    shared_with_close_friends: مشاركة مع الأصدقاء المقرّبين
+    item: الغرض
+    borrower: المستعير
+    lent_at: تاريخ الإعارة
+    due_date: تاريخ الإرجاع المتوقَّع
+    returned_at: تاريخ الإرجاع
+    status: الحالة
+    follower: المتابِع
+    followed: المتابَع
+    close_friend: صديق مقرّب
+help:
+    is_personal: لا يظهر الغرض الشخصي لأيّ أحد غيرك، ولا حتى لأصدقائك المقرّبين.
+    visible_to_followers: يرى أصدقاؤك المقرّبون أغراضك أصلًا؛ ضع علامة لإظهار هذا الغرض لمتابعيك أيضًا.
+    close_friend: يرى الصديق المقرّب أغراضك غير الشخصية، أمّا المتابع فلا يرى إلا ما تتيحه للمتابعين.
+role:
+    ROLE_USER: مستخدم
+    ROLE_CHILD: حساب طفل تابع
+    ROLE_SUPER_ADMIN: مدير عام
+category:
+    clothing: ملابس
+    book: كتاب
+    vinyl: أسطوانة فينيل
+    other: أخرى
+loan_status:
+    in_progress: جارية
+    overdue: متأخرة
+    returned: مُرجَعة
+kpi:
+    admin_title: نظرة عامة على بنديري
+    user_title: مرحبًا %name%
+    users: المستخدمون
+    new_users: المسجَّلون الجدد (7 أيام)
+    items: الأغراض المحفوظة في بنديري
+    personal_ratio: نسبة الأغراض الشخصية
+    items_per_user: متوسط الأغراض لكل مستخدم
+    active_loans: إعارات جارية
+    overdue_loans: إعارات متأخرة
+    by_category: الأغراض حسب الفئة
+    my_items: أغراضي
+    personal_items: الأغراض الشخصية
+    unstored_items: أغراض تحتاج إلى ترتيب
+    homes: المساكن
+    close_friends: الأصدقاء المقرّبون
+    followers: المتابعون

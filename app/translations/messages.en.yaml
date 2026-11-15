@@ -6,3 +6,84 @@ login:
     email: Email address
     password: Password
     submit: Sign in
+menu:
+    dashboard: Dashboard
+    people: People
+    users: Users
+    follows: Friends and followers
+    wardrobe: Wardrobe
+    homes: Homes
+    rooms: Rooms
+    furniture: Furniture
+    items: Items
+    loans: Loans
+    my_space: My space
+entity:
+    user: { singular: User, plural: Users }
+    follow: { singular: Relation, plural: Friends and followers }
+    home: { singular: Home, plural: Homes }
+    room: { singular: Room, plural: Rooms }
+    furniture: { singular: Piece of furniture, plural: Furniture }
+    item: { singular: Item, plural: Items }
+    loan: { singular: Loan, plural: Loans }
+field:
+    id: ID
+    name: Name
+    email: Email address
+    pseudo: Username
+    roles: Roles
+    parent: Parent account
+    created_at: Created on
+    owner: Owner
+    category: Category
+    color: Colour
+    brand: Brand
+    furniture: Stored in
+    is_personal: Personal item
+    visible_to_followers: Visible to followers
+    home: Home
+    room: Room
+    shared_with_close_friends: Shared with close friends
+    item: Item
+    borrower: Lent to
+    lent_at: Lent on
+    due_date: Due on
+    returned_at: Returned on
+    status: Status
+    follower: Follower
+    followed: Followed
+    close_friend: Close friend
+help:
+    is_personal: A personal item is never visible to anyone else, not even your close friends.
+    visible_to_followers: Your close friends already see your items; tick to show this one to your followers too.
+    close_friend: A close friend sees your non-personal items; a follower only sees the ones you open to followers.
+role:
+    ROLE_USER: User
+    ROLE_CHILD: Child sub-account
+    ROLE_SUPER_ADMIN: Super admin
+category:
+    clothing: Clothing
+    book: Book
+    vinyl: Vinyl
+    other: Other
+loan_status:
+    in_progress: In progress
+    overdue: Overdue
+    returned: Returned
+kpi:
+    admin_title: Penderie at a glance
+    user_title: Hello %name%
+    users: Users
+    new_users: New sign-ups (7 days)
+    items: Items stored in Penderie
+    personal_ratio: Share of personal items
+    items_per_user: Items per user
+    active_loans: Loans in progress
+    overdue_loans: Overdue loans
+    by_category: Items by category
+    my_items: My items
+    personal_items: Personal items
+    unstored_items: Items to put away
+    homes: Homes
+    close_friends: Close friends
+    followers: Followers

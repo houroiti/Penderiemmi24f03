@@ -1,11 +1,4 @@
-# Enable stateless CSRF protection for forms and logins/logouts
+# CSRF tokens are stored in the session (classic mode): it works without any JavaScript.
+# The "stateless" mode proposed by the recipe needs a Stimulus helper that this project does not use.
 framework:
-    form:
-        csrf_protection:
-            token_id: submit
-
-    csrf_protection:
-        stateless_token_ids:
-            - submit
-            - authenticate
-            - logout
+    csrf_protection: true

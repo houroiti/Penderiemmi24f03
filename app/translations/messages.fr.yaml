@@ -6,3 +6,84 @@ login:
     email: Adresse e-mail
     password: Mot de passe
     submit: Se connecter
+menu:
+    dashboard: Tableau de bord
+    people: Personnes
+    users: Utilisateurs
+    follows: Amis et abonnés
+    wardrobe: Penderie
+    homes: Logements
+    rooms: Pièces
+    furniture: Meubles
+    items: Objets
+    loans: Prêts
+    my_space: Mon espace
+entity:
+    user: { singular: Utilisateur, plural: Utilisateurs }
+    follow: { singular: Relation, plural: Amis et abonnés }
+    home: { singular: Logement, plural: Logements }
+    room: { singular: Pièce, plural: Pièces }
+    furniture: { singular: Meuble, plural: Meubles }
+    item: { singular: Objet, plural: Objets }
+    loan: { singular: Prêt, plural: Prêts }
+field:
+    id: Identifiant
+    name: Nom
+    email: Adresse e-mail
+    pseudo: Pseudo
+    roles: Rôles
+    parent: Compte parent
+    created_at: Créé le
+    owner: Propriétaire
+    category: Catégorie
+    color: Couleur
+    brand: Marque
+    furniture: Rangé dans
+    is_personal: Objet personnel
+    visible_to_followers: Visible par les abonnés
+    home: Logement
+    room: Pièce
+    shared_with_close_friends: Partagée avec les amis proches
+    item: Objet
+    borrower: Prêté à
+    lent_at: Prêté le
+    due_date: À rendre le
+    returned_at: Rendu le
+    status: Statut
+    follower: Abonné
+    followed: Suivi
+    close_friend: Ami proche
+help:
+    is_personal: Un objet personnel n'est jamais visible par les autres, même vos amis proches.
+    visible_to_followers: Vos amis proches voient déjà vos objets ; cochez pour les montrer aussi à vos abonnés.
+    close_friend: Un ami proche voit vos objets non personnels ; un abonné ne voit que ceux que vous ouvrez aux abonnés.
+role:
+    ROLE_USER: Utilisateur
+    ROLE_CHILD: Sous-compte enfant
+    ROLE_SUPER_ADMIN: Super admin
+category:
+    clothing: Vêtement
+    book: Livre
+    vinyl: Vinyle
+    other: Autre
+loan_status:
+    in_progress: En cours
+    overdue: En retard
+    returned: Rendu
+kpi:
+    admin_title: Vue d'ensemble de Penderie
+    user_title: Bonjour %name%
+    users: Utilisateurs
+    new_users: Nouveaux inscrits (7 jours)
+    items: Objets rangés dans Penderie
+    personal_ratio: Part d'objets personnels
+    items_per_user: Objets par utilisateur
+    active_loans: Prêts en cours
+    overdue_loans: Prêts en retard
+    by_category: Objets par catégorie
+    my_items: Mes objets
+    personal_items: Objets personnels
+    unstored_items: Objets à ranger
+    homes: Logements
+    close_friends: Amis proches
+    followers: Abonnés

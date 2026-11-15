@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Home;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,5 +15,10 @@ class HomeRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Home::class);
+    }
+
+    public function countByOwner(User $owner): int
+    {
+        return $this->count(['owner' => $owner]);
     }
 }
