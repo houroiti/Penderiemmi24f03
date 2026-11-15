@@ -1,0 +1,30 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}{{ 'kpi.user_title'|trans({'%name%': app.user.pseudo}) }}{% endblock %}
+
+{% block main %}
+    <div class="kpi-grid" data-cy="user-kpis">
+        {% for key, value in {
+            my_items: stats.items,
+            personal_items: stats.personalItems,
+            homes: stats.homes,
+            active_loans: stats.activeLoans,
+            close_friends: stats.closeFriends,
+            followers: stats.followers,
+        } %}
+            <div class="kpi">
+                <div class="kpi-value">{{ value }}</div>
+                <div class="kpi-label">{{ ('kpi.' ~ key)|trans }}</div>
+            </div>
+        {% endfor %}
+        {# the two indicators the client must act on are highlighted when not zero #}
+        <div class="kpi {{ stats.unstoredItems > 0 ? 'kpi-alert' }}">
+            <div class="kpi-value">{{ stats.unstoredItems }}</div>
+            <div class="kpi-label">{{ 'kpi.unstored_items'|trans }}</div>
+        </div>
+        <div class="kpi {{ stats.overdueLoans > 0 ? 'kpi-alert' }}">
+            <div class="kpi-value">{{ stats.overdueLoans }}</div>
+            <div class="kpi-label">{{ 'kpi.overdue_loans'|trans }}</div>
+        </div>
+    </div>
+{% endblock %}
