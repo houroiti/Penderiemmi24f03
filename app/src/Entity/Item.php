@@ -2,13 +2,15 @@
 
 namespace App\Entity;
 
+use App\Enum\ItemCategory;
 use App\Repository\ItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ItemRepository::class)]
-class Item
+#[ORM\Index(name: 'idx_item_category', columns: ['category'])]
+class Item implements OwnedInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -36,9 +38,41 @@ class Item
     #[Groups(['item:read'])]
     private \DateTimeImmutable $createdAt;
 
+    #[ORM\Column(length: 20, enumType: ItemCategory::class, options: ['default' => 'other'])]
+    #[Groups(['item:read'])]
+    private ItemCategory $category = ItemCategory::Other;
+
+    #[ORM\Column(length: 30, nullable: true)]
+    #[Assert\Length(max: 30)]
+    #[Groups(['item:read'])]
+    private ?string $color = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Assert\Length(max: 50)]
+    #[Groups(['item:read'])]
+    private ?string $brand = null;
+
+    /**
+     * Where the item is stored. Null = not put away yet.
+     */
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    private ?Furniture $furniture = null;
+
+    /**
+     * Followers (not close friends) only see the items their owner opened to them.
+     */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isVisibleToFollowers = false;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+    }
+
+    public function __toString(): string
+    {
+        return (string) $this->name;
     }
 
     public function getId(): ?int
@@ -51,7 +85,7 @@ class Item
         return $this->name;
     }
 
-    public function setName(string $name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
@@ -75,7 +109,7 @@ class Item
         return $this->owner;
     }
 
-    public function setOwner(User $owner): static
+    public function setOwner(?User $owner): static
     {
         $this->owner = $owner;
 
@@ -85,5 +119,65 @@ class Item
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    public function getCategory(): ItemCategory
+    {
+        return $this->category;
+    }
+
+    public function setCategory(ItemCategory $category): static
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): static
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    public function getBrand(): ?string
+    {
+        return $this->brand;
+    }
+
+    public function setBrand(?string $brand): static
+    {
+        $this->brand = $brand;
+
+        return $this;
+    }
+
+    public function getFurniture(): ?Furniture
+    {
+        return $this->furniture;
+    }
+
+    public function setFurniture(?Furniture $furniture): static
+    {
+        $this->furniture = $furniture;
+
+        return $this;
+    }
+
+    public function isVisibleToFollowers(): bool
+    {
+        return $this->isVisibleToFollowers;
+    }
+
+    public function setIsVisibleToFollowers(bool $isVisibleToFollowers): static
+    {
+        $this->isVisibleToFollowers = $isVisibleToFollowers;
+
+        return $this;
     }
 }
