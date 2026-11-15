@@ -35,6 +35,7 @@ final class UserCrudController extends AbstractCrudController
 
     /**
      * No "new" button: a password is chosen by its owner, never by the admin.
+     * Editing is limited to the roles (giving or removing admin rights is the admin's job).
      */
     public function configureActions(Actions $actions): Actions
     {
@@ -46,8 +47,9 @@ final class UserCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         yield IdField::new('id', 'field.id')->hideOnForm();
-        yield TextField::new('pseudo', 'field.pseudo');
-        yield EmailField::new('email', 'field.email');
+        // shown for context but not editable: an account's identity belongs to its owner
+        yield TextField::new('pseudo', 'field.pseudo')->setDisabled();
+        yield EmailField::new('email', 'field.email')->setDisabled();
         yield ChoiceField::new('roles', 'field.roles')
             ->setChoices([
                 'role.ROLE_USER' => 'ROLE_USER',
@@ -56,7 +58,8 @@ final class UserCrudController extends AbstractCrudController
             ])
             ->allowMultipleChoices()
             ->renderAsBadges();
-        yield AssociationField::new('parent', 'field.parent')->hideOnIndex();
+        // not editable: attaching a child to a parent would let it see the parent's items
+        yield AssociationField::new('parent', 'field.parent')->hideOnIndex()->setDisabled();
         yield DateTimeField::new('createdAt', 'field.created_at')->hideOnForm();
         // the password is never displayed nor editable here
     }
