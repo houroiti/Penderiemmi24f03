@@ -1,0 +1,7 @@
+{# "Stored in" column: the piece of furniture, or a badge when the item is not put away yet
+   (instead of EasyAdmin's generic "Aucun(e)"). #}
+{% if field.value is null %}
+    <span class="badge badge-warning">{{ 'form.not_stored'|trans }}</span>
+{% else %}
+    {{ field.formattedValue }}
+{% endif %}

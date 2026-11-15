@@ -109,6 +109,21 @@ final class PlacesTest extends WebTestCase
         self::assertCount(0, $crawler->filter("select[name=\"{$field}\"] option[selected]:not([value=''])"));
     }
 
+    public function testItemListShowsNotPutAwayInsteadOfNone(): void
+    {
+        $this->entityManager->persist((new Item())->setName('Pull neuf')->setOwner($this->entityManager->getReference(User::class, $this->camille->getId())));
+        $this->entityManager->flush();
+
+        $crawler = $this->client->request('GET', '/fr/mon-espace/my-item');
+
+        $cell = $crawler->filter('tr:contains("Pull neuf") td[data-column="furniture"]');
+        self::assertSame('Pas encore rangé', trim($cell->text()));
+
+        // a stored item shows its piece of furniture
+        $stored = $crawler->filter('tr:contains("Pull") td[data-column="furniture"]')->reduce(static fn ($td) => str_contains($td->text(), 'Armoire'));
+        self::assertCount(1, $stored);
+    }
+
     public function testARoomCannotBeCreatedWithoutChoosingAHome(): void
     {
         $crawler = $this->client->request('GET', '/fr/mon-espace/my-room/new');

@@ -95,6 +95,7 @@ final class MyItemCrudController extends AbstractOwnedCrudController
             ->setFormTypeOption('placeholder', 'form.not_stored')
             // the search widget of EasyAdmin displays this attribute (otherwise "Aucun(e)")
             ->setFormTypeOption('attr.placeholder', t('form.not_stored'))
+            ->setTemplatePath('easyadmin/field/furniture.html.twig')
             ->setQueryBuilder(static fn (QueryBuilder $queryBuilder) => $queryBuilder
                 ->join('entity.room', 'room')
                 ->join('room.home', 'home')

@@ -57,7 +57,7 @@ final class ItemCrudController extends AbstractCrudController
         yield ChoiceField::new('category', 'field.category')->setChoices(ItemCategory::choices());
         yield TextField::new('color', 'field.color');
         yield TextField::new('brand', 'field.brand');
-        yield AssociationField::new('furniture', 'field.furniture')->hideOnIndex();
+        yield AssociationField::new('furniture', 'field.furniture')->hideOnIndex()->setTemplatePath('easyadmin/field/furniture.html.twig');
         yield BooleanField::new('isPersonal', 'field.is_personal')->renderAsSwitch(false);
         yield BooleanField::new('isVisibleToFollowers', 'field.visible_to_followers')->hideOnIndex();
         yield DateTimeField::new('createdAt', 'field.created_at')->hideOnForm();
