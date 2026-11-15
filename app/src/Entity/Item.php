@@ -28,8 +28,9 @@ class Item implements OwnedInterface
     #[Groups(['item:read'])]
     private bool $isPersonal = false;
 
+    // deleting a user deletes their items (and the loans of those items): right to erasure
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Assert\NotNull]
     #[Groups(['item:read'])]
     private ?User $owner = null;
