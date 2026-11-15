@@ -55,6 +55,8 @@ final class StatsServiceTest extends KernelTestCase
         self::assertSame(4, $stats['items']);
         self::assertSame(1, $stats['personalItems']);
         self::assertSame(25.0, $stats['personalRatio']);
+        // only the pull is in a piece of furniture: 1 item out of 4
+        self::assertSame(25.0, $stats['storedRatio']);
         self::assertSame(2.0, $stats['itemsPerUser']);
         self::assertSame(2, $stats['activeLoans']);
         self::assertSame(1, $stats['overdueLoans']);

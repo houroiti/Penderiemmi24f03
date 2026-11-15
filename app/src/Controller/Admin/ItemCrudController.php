@@ -16,6 +16,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 /**
+ * The admin can see every item and delete one for moderation (inappropriate content),
+ * but never create or change one: unticking "personal" or opening it to followers
+ * would expose it without its owner's consent.
+ *
  * @extends AbstractCrudController<Item>
  */
 final class ItemCrudController extends AbstractCrudController
@@ -36,7 +40,9 @@ final class ItemCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        return $actions->add(Crud::PAGE_INDEX, Action::DETAIL);
+        return $actions
+            ->disable(Action::NEW, Action::EDIT, Action::BATCH_DELETE)
+            ->add(Crud::PAGE_INDEX, Action::DETAIL);
     }
 
     public function configureFilters(Filters $filters): Filters

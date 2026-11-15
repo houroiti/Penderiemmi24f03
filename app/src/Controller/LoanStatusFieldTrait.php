@@ -20,7 +20,7 @@ trait LoanStatusFieldTrait
         }
 
         return ChoiceField::new('status', 'field.status')
-            ->onlyOnIndex()
+            ->hideOnForm()
             ->setTranslatableChoices($choices)
             ->renderAsBadges([
                 LoanStatus::InProgress->value => 'info',

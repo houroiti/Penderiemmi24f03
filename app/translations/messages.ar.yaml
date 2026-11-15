@@ -75,7 +75,8 @@ kpi:
     user_title: مرحبًا %name%
     users: المستخدمون
     new_users: المسجَّلون الجدد (7 أيام)
-    items: الأغراض المحفوظة في بنديري
+    items: الأغراض في بنديري
+    stored_ratio: الأغراض المرتَّبة في قطع الأثاث
     personal_ratio: نسبة الأغراض الشخصية
     items_per_user: متوسط الأغراض لكل مستخدم
     active_loans: إعارات جارية
