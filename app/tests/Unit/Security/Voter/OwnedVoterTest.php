@@ -43,6 +43,15 @@ final class OwnedVoterTest extends TestCase
         self::assertSame(VoterInterface::ACCESS_DENIED, $vote);
     }
 
+    public function testALoggedInUserMayOpenACreationForm(): void
+    {
+        $sophie = self::user(2);
+
+        $vote = (new OwnedVoter())->vote(new UsernamePasswordToken($sophie, 'main', $sophie->getRoles()), null, [OwnedVoter::MANAGE]);
+
+        self::assertSame(VoterInterface::ACCESS_GRANTED, $vote);
+    }
+
     public function testAnonymousCannotManage(): void
     {
         $home = (new Home())->setName('Appartement')->setOwner(self::user(1));

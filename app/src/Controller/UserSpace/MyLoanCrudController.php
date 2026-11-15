@@ -10,7 +10,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @extends AbstractOwnedCrudController<Loan>
@@ -18,11 +17,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class MyLoanCrudController extends AbstractOwnedCrudController
 {
     use LoanStatusFieldTrait;
-
-    public function __construct(
-        private readonly TranslatorInterface $translator,
-    ) {
-    }
 
     public static function getEntityFqcn(): string
     {
@@ -58,6 +52,6 @@ final class MyLoanCrudController extends AbstractOwnedCrudController
         yield DateField::new('lentAt', 'field.lent_at');
         yield DateField::new('dueDate', 'field.due_date');
         yield DateField::new('returnedAt', 'field.returned_at');
-        yield $this->loanStatusField($this->translator);
+        yield $this->loanStatusField();
     }
 }

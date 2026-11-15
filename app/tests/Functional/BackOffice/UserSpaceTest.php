@@ -3,6 +3,7 @@
 namespace App\Tests\Functional\BackOffice;
 
 use App\Entity\Item;
+use App\Entity\Loan;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -54,6 +55,71 @@ final class UserSpaceTest extends WebTestCase
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('body', 'Pull bordeaux');
         self::assertSelectorTextNotContains('body', 'Robe de Sophie');
+    }
+
+    public function testCreatingAnItemAlwaysMakesMeTheOwner(): void
+    {
+        $camille = $this->createUser('camille@example.com', 'Camille');
+
+        $this->client->loginUser($camille);
+        $crawler = $this->client->request('GET', '/fr/mon-espace/my-item/new');
+        self::assertResponseIsSuccessful();
+
+        // there is no owner field in the form: it cannot be forged
+        self::assertCount(0, $crawler->filter('[name="Item[owner]"]'));
+
+        $form = $crawler->filter('form[name="Item"]')->form(['Item[name]' => 'Trench beige']);
+        $this->client->submit($form);
+        self::assertResponseRedirects();
+
+        $item = $this->entityManager->getRepository(Item::class)->findOneBy(['name' => 'Trench beige']);
+        self::assertNotNull($item);
+        self::assertSame($camille->getId(), $item->getOwner()?->getId());
+    }
+
+    public function testCreatingALoanOnlyOffersMyOwnItems(): void
+    {
+        $camille = $this->createUser('camille@example.com', 'Camille');
+        $sophie = $this->createUser('sophie@example.com', 'Sophie');
+        $pull = $this->createItem('Pull bordeaux', $camille);
+        $this->createItem('Robe de Sophie', $sophie);
+
+        $this->client->loginUser($camille);
+        $crawler = $this->client->request('GET', '/fr/mon-espace/my-loan/new');
+        self::assertResponseIsSuccessful();
+
+        $options = $crawler->filter('select[name="Loan[item]"] option')->extract(['_text']);
+        self::assertContains('Pull bordeaux', $options);
+        self::assertNotContains('Robe de Sophie', $options);
+
+        $form = $crawler->filter('form[name="Loan"]')->form([
+            'Loan[item]' => (string) $pull->getId(),
+            'Loan[borrowerName]' => 'Sophie',
+            'Loan[lentAt]' => '2026-11-01',
+            'Loan[dueDate]' => '2026-11-20',
+        ]);
+        $this->client->submit($form);
+
+        self::assertResponseRedirects();
+        self::assertSame(1, $this->entityManager->getRepository(Loan::class)->count(['item' => $pull]));
+    }
+
+    public function testLoanListShowsTheStatusDeducedFromTheDates(): void
+    {
+        $camille = $this->createUser('camille@example.com', 'Camille');
+        $loan = (new Loan())
+            ->setItem($this->createItem('Vinyle · Fairuz', $camille))
+            ->setBorrowerName('Sophie')
+            ->setLentAt(new \DateTimeImmutable('-20 days'))
+            ->setDueDate(new \DateTimeImmutable('-5 days'));
+        $this->entityManager->persist($loan);
+        $this->entityManager->flush();
+
+        $this->client->loginUser($camille);
+        $this->client->request('GET', '/fr/mon-espace/my-loan');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('.badge-danger', 'En retard');
     }
 
     public function testChangingTheIdInTheUrlToEditSomeoneElsesItemIsForbidden(): void
