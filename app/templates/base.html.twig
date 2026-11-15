@@ -1,23 +1,49 @@
+{# Arabic is written right to left: the whole page is mirrored with dir="rtl" #}
+{% set locale = app.request.locale %}
 <!DOCTYPE html>
-<html>
+<html lang="{{ locale }}" dir="{{ locale == 'ar' ? 'rtl' : 'ltr' }}">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
-
-        {% block javascripts %}
-        {% endblock %}
-
-        {% set frankenphp_hot_reload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
-        {% if frankenphp_hot_reload %}
-        <meta name="frankenphp-hot-reload:url" content="{{ frankenphp_hot_reload }}">
-        <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
-        <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
-        {% endif %}
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}Penderie{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🧥</text></svg>">
+        <style>
+            :root { --bordeaux: #5E0A28; --beige: #F5EEE6; --cognac: #9A5B2E; --text: #2B1A1F; }
+            * { box-sizing: border-box; }
+            body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif; background: var(--beige); color: var(--text); }
+            header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem; background: var(--bordeaux); color: #fff; }
+            header a { color: #fff; }
+            .brand { font-weight: 700; font-size: 1.25rem; text-decoration: none; }
+            .locales { display: flex; gap: .75rem; list-style: none; margin: 0; padding: 0; }
+            .locales a[aria-current="true"] { font-weight: 700; text-decoration: underline; }
+            main { max-width: 26rem; margin: 2rem auto; padding: 0 1rem; }
+            .card { background: #fff; border-radius: .75rem; padding: 1.5rem; box-shadow: 0 2px 8px rgb(0 0 0 / 8%); }
+            label { display: block; margin: 1rem 0 .25rem; font-weight: 600; }
+            input { width: 100%; padding: .75rem; border: 1px solid #8a7a7f; border-radius: .5rem; font-size: 1rem; }
+            button { width: 100%; margin-top: 1.5rem; padding: .85rem; border: 0; border-radius: .5rem; background: var(--bordeaux); color: #fff; font-size: 1rem; font-weight: 600; cursor: pointer; }
+            button:hover { background: var(--cognac); }
+            .error { padding: .75rem; border-radius: .5rem; background: #fde8ec; color: #8B0F3B; }
+        </style>
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <header>
+            <a class="brand" href="{{ path('app_home') }}">Penderie</a>
+            {% if app.current_route %}
+                <nav aria-label="{{ 'nav.language'|trans }}">
+                    <ul class="locales">
+                        {% for code, name in {fr: 'Français', en: 'English', ar: 'العربية'} %}
+                            <li>
+                                <a href="{{ path(app.current_route, app.current_route_parameters|merge({_locale: code})) }}"
+                                   lang="{{ code }}" hreflang="{{ code }}" aria-current="{{ code == locale ? 'true' : 'false' }}"
+                                   data-cy="locale-{{ code }}">{{ name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            {% endif %}
+        </header>
+        <main>
+            {% block body %}{% endblock %}
+        </main>
     </body>
 </html>

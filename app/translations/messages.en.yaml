@@ -1,0 +1,8 @@
+nav:
+    language: Language
+    logout: Log out
+login:
+    title: Sign in
+    email: Email address
+    password: Password
+    submit: Sign in

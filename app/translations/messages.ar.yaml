@@ -1,0 +1,8 @@
+nav:
+    language: اللغة
+    logout: تسجيل الخروج
+login:
+    title: تسجيل الدخول
+    email: البريد الإلكتروني
+    password: كلمة المرور
+    submit: دخول
