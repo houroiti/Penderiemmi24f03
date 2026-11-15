@@ -1,0 +1,8 @@
+nav:
+    language: Langue
+    logout: Se déconnecter
+login:
+    title: Connexion
+    email: Adresse e-mail
+    password: Mot de passe
+    submit: Se connecter
