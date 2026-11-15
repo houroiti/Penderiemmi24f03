@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 
 /**
@@ -16,8 +17,15 @@ trait PenderieDashboardTrait
         return Dashboard::new()
             ->setTitle($title)
             ->setTranslationDomain('messages')
-            ->setLocales(['fr' => 'Français', 'en' => 'English', 'ar' => 'العربية'])
-            ->setFaviconPath('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🧥</text></svg>');
+            ->setLocales(['fr' => 'Français', 'en' => 'English', 'ar' => 'العربية']);
+    }
+
+    /**
+     * Our layout (templates/easyadmin/layout.html.twig) is used by every page of the back office.
+     */
+    public function configureCrud(): Crud
+    {
+        return Crud::new()->overrideTemplate('layout', 'easyadmin/layout.html.twig');
     }
 
     public function configureAssets(): Assets
