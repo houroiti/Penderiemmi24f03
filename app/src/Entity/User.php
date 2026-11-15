@@ -46,6 +46,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['item:read'])]
     private ?string $pseudo = null;
 
+    #[ORM\Column]
+    private \DateTimeImmutable $createdAt;
+
+    /**
+     * Set only for a child sub-account (ROLE_CHILD): the parent account that manages it.
+     */
+    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    private ?User $parent = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
+    public function __toString(): string
+    {
+        return (string) $this->pseudo;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -56,7 +76,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): static
+    public function setEmail(?string $email): static
     {
         $this->email = $email;
 
@@ -132,9 +152,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->pseudo;
     }
 
-    public function setPseudo(string $pseudo): static
+    public function setPseudo(?string $pseudo): static
     {
         $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function isChild(): bool
+    {
+        return in_array('ROLE_CHILD', $this->roles, true);
+    }
+
+    public function getParent(): ?User
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?User $parent): static
+    {
+        $this->parent = $parent;
 
         return $this;
     }

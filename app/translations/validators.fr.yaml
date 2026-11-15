@@ -1,0 +1,3 @@
+follow.self: Vous ne pouvez pas vous suivre vous-même.
+loan.due_before_lent: La date de retour prévue doit être après la date du prêt.
+loan.returned_before_lent: La date de retour doit être après la date du prêt.

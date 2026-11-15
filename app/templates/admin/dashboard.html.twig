@@ -1,0 +1,42 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_title %}{{ 'kpi.admin_title'|trans }}{% endblock %}
+
+{% block main %}
+    <div class="kpi-grid" data-cy="admin-kpis">
+        {% for key, value in {
+            users: stats.users,
+            new_users: stats.newUsersLast7Days,
+            items: stats.items,
+            personal_ratio: stats.personalRatio ~ ' %',
+            items_per_user: stats.itemsPerUser,
+            active_loans: stats.activeLoans,
+        } %}
+            <div class="kpi">
+                <div class="kpi-value">{{ value }}</div>
+                <div class="kpi-label">{{ ('kpi.' ~ key)|trans }}</div>
+            </div>
+        {% endfor %}
+        <div class="kpi {{ stats.overdueLoans > 0 ? 'kpi-alert' }}">
+            <div class="kpi-value">{{ stats.overdueLoans }}</div>
+            <div class="kpi-label">{{ 'kpi.overdue_loans'|trans }}</div>
+        </div>
+    </div>
+
+    <h2 class="h4">{{ 'kpi.by_category'|trans }}</h2>
+    <table class="table">
+        <tbody>
+            {% for category, total in stats.itemsByCategory %}
+                <tr>
+                    <th scope="row">{{ ('category.' ~ category)|trans }}</th>
+                    <td>{{ total }}</td>
+                    <td class="w-50">
+                        <div class="progress" role="progressbar" aria-valuenow="{{ total }}" aria-valuemin="0" aria-valuemax="{{ stats.items }}">
+                            <div class="progress-bar" style="width: {{ stats.items > 0 ? (total * 100 / stats.items)|round : 0 }}%; background-color: #5E0A28"></div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
