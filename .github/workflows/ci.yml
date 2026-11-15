@@ -1,0 +1,78 @@
+# Runs on every push and every pull request: the same checks as "make quality" and "make test".
+# A red pipeline blocks the merge of the pull request.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  quality-and-tests:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: app
+
+    services:
+      database:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: penderie
+          POSTGRES_USER: penderie
+          POSTGRES_PASSWORD: penderie
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U penderie"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # same database as in Docker, reached on localhost from the CI runner
+      DATABASE_URL: postgresql://penderie:penderie@127.0.0.1:5432/penderie?serverVersion=17&charset=utf8
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PHP 8.4 with the same extensions as the Docker image
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_pgsql, intl, zip
+          coverage: none
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ hashFiles('app/composer.lock') }}
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Lint container, YAML and Twig
+        run: |
+          bin/console lint:container
+          bin/console lint:yaml config translations --parse-tags
+          bin/console lint:twig templates
+
+      - name: PHPStan (level 6)
+        run: |
+          bin/console cache:warmup --quiet
+          vendor/bin/phpstan analyse --memory-limit=512M --no-progress
+
+      - name: Known vulnerabilities in dependencies
+        run: composer audit
+
+      - name: Test database
+        run: |
+          bin/console doctrine:database:create --env=test --if-not-exists
+          bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+      - name: PHPUnit
+        run: bin/phpunit --testdox
