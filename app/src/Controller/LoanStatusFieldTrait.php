@@ -2,19 +2,30 @@
 
 namespace App\Controller;
 
-use App\Entity\Loan;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Enum\LoanStatus;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+
+use function Symfony\Component\Translation\t;
 
 /**
- * The loan status is not a column: it is computed by Loan::getStatus() and translated for display.
+ * The loan status is not a column: it is computed by Loan::getStatus() and shown as a coloured badge.
  */
 trait LoanStatusFieldTrait
 {
-    private function loanStatusField(TranslatorInterface $translator): TextField
+    private function loanStatusField(): ChoiceField
     {
-        return TextField::new('status', 'field.status')
+        $choices = [];
+        foreach (LoanStatus::cases() as $status) {
+            $choices[$status->value] = t('loan_status.'.$status->value);
+        }
+
+        return ChoiceField::new('status', 'field.status')
             ->onlyOnIndex()
-            ->formatValue(static fn (mixed $value, Loan $loan): string => $loan->getStatus()->trans($translator));
+            ->setTranslatableChoices($choices)
+            ->renderAsBadges([
+                LoanStatus::InProgress->value => 'info',
+                LoanStatus::Overdue->value => 'danger',
+                LoanStatus::Returned->value => 'success',
+            ]);
     }
 }

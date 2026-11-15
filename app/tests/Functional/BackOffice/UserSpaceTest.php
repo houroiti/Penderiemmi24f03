@@ -3,6 +3,7 @@
 namespace App\Tests\Functional\BackOffice;
 
 use App\Entity\Item;
+use App\Entity\Loan;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -74,6 +75,24 @@ final class UserSpaceTest extends WebTestCase
         $item = $this->entityManager->getRepository(Item::class)->findOneBy(['name' => 'Trench beige']);
         self::assertNotNull($item);
         self::assertSame($camille->getId(), $item->getOwner()?->getId());
+    }
+
+    public function testLoanListShowsTheStatusDeducedFromTheDates(): void
+    {
+        $camille = $this->createUser('camille@example.com', 'Camille');
+        $loan = (new Loan())
+            ->setItem($this->createItem('Vinyle · Fairuz', $camille))
+            ->setBorrowerName('Sophie')
+            ->setLentAt(new \DateTimeImmutable('-20 days'))
+            ->setDueDate(new \DateTimeImmutable('-5 days'));
+        $this->entityManager->persist($loan);
+        $this->entityManager->flush();
+
+        $this->client->loginUser($camille);
+        $this->client->request('GET', '/fr/mon-espace/my-loan');
+
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('.badge-danger', 'En retard');
     }
 
     public function testChangingTheIdInTheUrlToEditSomeoneElsesItemIsForbidden(): void
