@@ -6,6 +6,7 @@ use App\Entity\Item;
 use App\Entity\User;
 use App\Enum\ItemCategory;
 use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -31,6 +32,33 @@ final class MyItemCrudController extends AbstractOwnedCrudController
             ->setEntityLabelInPlural('entity.item.plural')
             ->setSearchFields(['name', 'brand', 'color'])
             ->setDefaultSort(['createdAt' => 'DESC']);
+    }
+
+    /**
+     * Comfort only: while "personal" is ticked, "visible to followers" is unticked and greyed out.
+     * The real protection is the validation rule of Item, checked by the server.
+     */
+    public function configureAssets(Assets $assets): Assets
+    {
+        return $assets->addHtmlContentToBody(<<<'HTML'
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const personal = document.querySelector('[name="Item[isPersonal]"]');
+                    const visible = document.querySelector('[name="Item[isVisibleToFollowers]"]');
+                    if (!personal || !visible) {
+                        return; // list page, or child account (no sharing box)
+                    }
+                    const sync = () => {
+                        if (personal.checked) {
+                            visible.checked = false;
+                        }
+                        visible.disabled = personal.checked;
+                    };
+                    personal.addEventListener('change', sync);
+                    sync();
+                });
+            </script>
+            HTML);
     }
 
     public function configureFilters(Filters $filters): Filters

@@ -7,6 +7,7 @@ use App\Repository\ItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: ItemRepository::class)]
 #[ORM\Index(name: 'idx_item_category', columns: ['category'])]
@@ -168,6 +169,20 @@ class Item implements OwnedInterface
         $this->furniture = $furniture;
 
         return $this;
+    }
+
+    /**
+     * A personal item is never shared: it cannot be opened to followers at the same time.
+     * The form greys the box out, but only the server can be trusted (rule 4 of the audit).
+     */
+    #[Assert\Callback]
+    public function validatePersonalIsNotShared(ExecutionContextInterface $context): void
+    {
+        if ($this->isPersonal && $this->isVisibleToFollowers) {
+            $context->buildViolation('item.personal_not_shared')
+                ->atPath('isVisibleToFollowers')
+                ->addViolation();
+        }
     }
 
     public function isVisibleToFollowers(): bool

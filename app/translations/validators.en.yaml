@@ -1,3 +1,4 @@
 follow.self: You cannot follow yourself.
 loan.due_before_lent: The due date must be after the loan date.
 loan.returned_before_lent: The return date must be after the loan date.
+item.personal_not_shared: A personal item cannot be visible to followers.

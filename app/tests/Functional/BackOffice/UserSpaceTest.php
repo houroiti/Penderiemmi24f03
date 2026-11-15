@@ -77,6 +77,29 @@ final class UserSpaceTest extends WebTestCase
         self::assertSame($camille->getId(), $item->getOwner()?->getId());
     }
 
+    /**
+     * The form greys the box out in the browser, but a forged request could still send both:
+     * the server must refuse it.
+     */
+    public function testAPersonalItemCannotBeOpenedToFollowers(): void
+    {
+        $camille = $this->createUser('camille@example.com', 'Camille');
+
+        $this->client->loginUser($camille);
+        $crawler = $this->client->request('GET', '/fr/mon-espace/my-item/new');
+        // the comfort script is on the page
+        self::assertStringContainsString('Item[isVisibleToFollowers]', (string) $this->client->getResponse()->getContent());
+
+        $form = $crawler->filter('form[name="Item"]')->form(['Item[name]' => 'Bague de famille']);
+        $form['Item[isPersonal]']->tick();
+        $form['Item[isVisibleToFollowers]']->tick();
+        $this->client->submit($form);
+
+        self::assertResponseStatusCodeSame(422);
+        self::assertSelectorTextContains('body', 'Un objet personnel ne peut pas être visible par les abonnés.');
+        self::assertNull($this->entityManager->getRepository(Item::class)->findOneBy(['name' => 'Bague de famille']));
+    }
+
     public function testCreatingALoanOnlyOffersMyOwnItems(): void
     {
         $camille = $this->createUser('camille@example.com', 'Camille');
