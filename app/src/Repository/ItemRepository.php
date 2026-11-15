@@ -3,6 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Item;
+use App\Entity\Furniture;
+use App\Entity\Home;
+use App\Entity\Room;
 use App\Entity\User;
 use App\Enum\ItemCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -58,5 +61,24 @@ class ItemRepository extends ServiceEntityRepository
         }
 
         return $counts;
+    }
+
+    /**
+     * Number of items stored in a home, a room or a piece of furniture
+     * (shown before deleting it: these items will become "to put away").
+     */
+    public function countStoredIn(Home|Room|Furniture $place): int
+    {
+        $queryBuilder = $this->createQueryBuilder('i')
+            ->select('COUNT(i.id)')
+            ->join('i.furniture', 'f');
+
+        match (true) {
+            $place instanceof Furniture => $queryBuilder->andWhere('f = :place'),
+            $place instanceof Room => $queryBuilder->andWhere('f.room = :place'),
+            $place instanceof Home => $queryBuilder->join('f.room', 'r')->andWhere('r.home = :place'),
+        };
+
+        return (int) $queryBuilder->setParameter('place', $place)->getQuery()->getSingleScalarResult();
     }
 }

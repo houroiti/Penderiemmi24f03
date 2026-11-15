@@ -88,3 +88,10 @@ kpi:
     homes: Logements
     close_friends: Amis proches
     followers: Abonnés
+action:
+    add_room: "Ajouter une pièce"
+    add_furniture: "Ajouter un meuble"
+confirm:
+    delete_home: "Supprimer « %name% » supprimera aussi ses pièces (%rooms%) et ses meubles (%furniture%). Les objets rangés dedans (%items%) ne seront pas supprimés : ils seront à ranger."
+    delete_room: "Supprimer « %name% » supprimera aussi ses meubles (%furniture%). Les objets rangés dedans (%items%) ne seront pas supprimés : ils seront à ranger."
+    delete_furniture: "Supprimer « %name% » ? Les objets rangés dedans (%items%) ne seront pas supprimés : ils seront à ranger."
