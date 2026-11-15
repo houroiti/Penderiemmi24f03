@@ -22,7 +22,7 @@ final class ItemVoterTest extends TestCase
 
     /**
      * @param 'owner'|'other'|'child'|null $who      null = anonymous
-     * @param 'normal'|'personal'|'for_followers' $itemKind
+     * @param 'normal'|'personal'|'for_followers'|'personal_for_followers' $itemKind
      * @param 'close_friend'|'follower'|null $relation relation between "other" and the owner
      */
     #[DataProvider('voteProvider')]
@@ -38,8 +38,8 @@ final class ItemVoterTest extends TestCase
         $item = (new Item())
             ->setName('Vinyle')
             ->setOwner($owner)
-            ->setIsPersonal('personal' === $itemKind)
-            ->setIsVisibleToFollowers('for_followers' === $itemKind);
+            ->setIsPersonal(in_array($itemKind, ['personal', 'personal_for_followers'], true))
+            ->setIsVisibleToFollowers(in_array($itemKind, ['for_followers', 'personal_for_followers'], true));
 
         // the voter reads FOLLOWS through the repository: here we fake its answer, no database needed
         $follow = null === $relation ? null : (new Follow())->setIsCloseFriend('close_friend' === $relation);
@@ -72,6 +72,10 @@ final class ItemVoterTest extends TestCase
         yield 'close friend cannot view a personal item' => ['other', 'personal', ItemVoter::VIEW, 'close_friend', $denied];
         yield 'follower cannot view a normal item' => ['other', 'normal', ItemVoter::VIEW, 'follower', $denied];
         yield 'follower can view an item opened to followers' => ['other', 'for_followers', ItemVoter::VIEW, 'follower', $granted];
+
+        // even if such data existed (the validation forbids it), "personal" wins over any sharing
+        yield 'follower cannot view a personal item, even opened to followers' => ['other', 'personal_for_followers', ItemVoter::VIEW, 'follower', $denied];
+        yield 'close friend cannot view a personal item, even opened to followers' => ['other', 'personal_for_followers', ItemVoter::VIEW, 'close_friend', $denied];
 
         yield 'child can view the parent item' => ['child', 'normal', ItemVoter::VIEW, null, $granted];
         yield 'child cannot edit the parent item' => ['child', 'normal', ItemVoter::EDIT, null, $denied];
