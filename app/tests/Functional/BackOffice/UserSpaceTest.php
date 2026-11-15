@@ -56,6 +56,26 @@ final class UserSpaceTest extends WebTestCase
         self::assertSelectorTextNotContains('body', 'Robe de Sophie');
     }
 
+    public function testCreatingAnItemAlwaysMakesMeTheOwner(): void
+    {
+        $camille = $this->createUser('camille@example.com', 'Camille');
+
+        $this->client->loginUser($camille);
+        $crawler = $this->client->request('GET', '/fr/mon-espace/my-item/new');
+        self::assertResponseIsSuccessful();
+
+        // there is no owner field in the form: it cannot be forged
+        self::assertCount(0, $crawler->filter('[name="Item[owner]"]'));
+
+        $form = $crawler->filter('form[name="Item"]')->form(['Item[name]' => 'Trench beige']);
+        $this->client->submit($form);
+        self::assertResponseRedirects();
+
+        $item = $this->entityManager->getRepository(Item::class)->findOneBy(['name' => 'Trench beige']);
+        self::assertNotNull($item);
+        self::assertSame($camille->getId(), $item->getOwner()?->getId());
+    }
+
     public function testChangingTheIdInTheUrlToEditSomeoneElsesItemIsForbidden(): void
     {
         $camille = $this->createUser('camille@example.com', 'Camille');
