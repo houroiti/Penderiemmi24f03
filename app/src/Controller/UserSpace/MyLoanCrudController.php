@@ -11,6 +11,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractOwnedCrudController<Loan>
  */
@@ -47,6 +49,8 @@ final class MyLoanCrudController extends AbstractOwnedCrudController
         yield AssociationField::new('item', 'field.item')
             // an empty first choice: nothing is silently pre-selected, the user chooses on purpose
             ->setFormTypeOption('placeholder', 'form.choose_item')
+            // the search widget of EasyAdmin displays this attribute (otherwise "Aucun(e)")
+            ->setFormTypeOption('attr.placeholder', t('form.choose_item'))
             ->setQueryBuilder(static fn (QueryBuilder $queryBuilder) => $queryBuilder
                 ->andWhere('entity.owner = :owner')
                 ->setParameter('owner', $user));

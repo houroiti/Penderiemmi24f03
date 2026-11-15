@@ -15,6 +15,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractOwnedCrudController<Item>
  */
@@ -91,6 +93,8 @@ final class MyItemCrudController extends AbstractOwnedCrudController
         yield AssociationField::new('furniture', 'field.furniture')
             // an empty first choice: nothing is silently pre-selected, the user chooses on purpose
             ->setFormTypeOption('placeholder', 'form.not_stored')
+            // the search widget of EasyAdmin displays this attribute (otherwise "Aucun(e)")
+            ->setFormTypeOption('attr.placeholder', t('form.not_stored'))
             ->setQueryBuilder(static fn (QueryBuilder $queryBuilder) => $queryBuilder
                 ->join('entity.room', 'room')
                 ->join('room.home', 'home')

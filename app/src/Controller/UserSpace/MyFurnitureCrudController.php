@@ -14,6 +14,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Translation\TranslatableMessage;
 
+use function Symfony\Component\Translation\t;
+
 /**
  * @extends AbstractOwnedCrudController<Furniture>
  */
@@ -85,6 +87,8 @@ final class MyFurnitureCrudController extends AbstractOwnedCrudController
         yield AssociationField::new('room', 'field.room')
             // an empty first choice: nothing is silently pre-selected, the user chooses on purpose
             ->setFormTypeOption('placeholder', 'form.choose_room')
+            // the search widget of EasyAdmin displays this attribute (otherwise "Aucun(e)")
+            ->setFormTypeOption('attr.placeholder', t('form.choose_room'))
             ->setQueryBuilder(static fn (QueryBuilder $queryBuilder) => $queryBuilder
                 ->join('entity.home', 'home')
                 ->andWhere('home.owner = :owner')

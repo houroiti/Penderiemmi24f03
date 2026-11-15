@@ -99,6 +99,9 @@ final class PlacesTest extends WebTestCase
     {
         $crawler = $this->client->request('GET', $url);
 
+        // EasyAdmin's search widget displays this attribute instead of the option label
+        self::assertSame($label, $crawler->filter("select[name=\"{$field}\"]")->attr('placeholder'));
+
         $first = $crawler->filter("select[name=\"{$field}\"] option")->first();
         self::assertSame('', $first->attr('value'));
         self::assertSame($label, trim($first->text()));
