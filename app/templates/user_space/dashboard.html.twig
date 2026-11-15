@@ -1,6 +1,6 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
-{% block page_title %}{{ 'kpi.user_title'|trans({'%name%': app.user.pseudo}) }}{% endblock %}
+{% block content_title %}{{ 'kpi.user_title'|trans({'%name%': app.user.pseudo}) }}{% endblock %}
 
 {% block main %}
     <div class="kpi-grid" data-cy="user-kpis">

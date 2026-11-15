@@ -47,6 +47,8 @@ final class AdminDashboardTest extends WebTestCase
         self::assertSelectorTextContains('[data-cy="admin-kpis"]', $title);
         self::assertSame($direction, $crawler->filter('html')->attr('dir'));
         self::assertSame($locale, $crawler->filter('html')->attr('lang'));
+        self::assertSelectorExists('.content-header h1');
+        self::assertNotSame('', trim($crawler->filter('.content-header h1')->text()));
     }
 
     /**

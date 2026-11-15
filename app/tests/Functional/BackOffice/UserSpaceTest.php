@@ -40,6 +40,17 @@ final class UserSpaceTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSelectorTextContains('[data-cy="user-kpis"]', 'Mes objets');
+        // the greeting is shown in the page itself, not only in the browser tab
+        self::assertSelectorTextContains('.content-header h1', 'Bonjour Camille');
+        self::assertPageTitleContains('Bonjour Camille');
+    }
+
+    public function testGreetingIsTranslated(): void
+    {
+        $this->client->loginUser($this->createUser('camille@example.com', 'Camille'));
+        $this->client->request('GET', '/ar/mon-espace');
+
+        self::assertSelectorTextContains('.content-header h1', 'مرحبًا Camille');
     }
 
     public function testListOnlyContainsMyItems(): void
